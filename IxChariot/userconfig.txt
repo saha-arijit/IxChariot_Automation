@@ -1,0 +1,10 @@
+*** Variables ***
+${var_webServerAddress}   https://192.168.2.30    # Server Address for IxChariot
+${var_ixcusername}    angelo.virgilio@ecin.ca    # UserName - Username for IxChariot
+${var_ixcpassword}    Ec1networks$    # Password - Password for IxChariot
+${var_ixcapikey}    7faf1207-b2ff-4a90-9a70-ea5ec87040f1    # API key for IxChariot
+${var_ixcapiVersion}	v1		# API Version for IxChariot
+${MAC1}           192.168.2.100    # IP Address of MacBook 1
+${MAC2}           192.168.2.101    # IP Address of MacBook 2
+${MAC3}           192.168.2.102    # IP Address of MacBook 3
+${DESKTOP}        192.168.2.29     # IP Address of DESKTOP
