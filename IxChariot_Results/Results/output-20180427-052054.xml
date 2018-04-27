@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20180427 05:20:54.014" generator="Robot 3.0.2 (Python 2.7.9 on win32)">
+<suite source="C:\IxChariot_Automation\IxChariot" id="s1" name="IxChariot">
+<suite source="C:\IxChariot_Automation\IxChariot\Execute_Flow_MAC.robot" id="s1-s1" name="Execute Flow MAC">
+<test id="s1-s1-t1" name="BELL_MAC3_DS">
+<kw name="Run BELL MAC3 DS" library="BELL_MAC3_DS">
+<msg timestamp="20180427 05:20:54.140" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Connecting to https://192.168.2.30</msg>
+<msg timestamp="20180427 05:20:54.150" level="INFO">Starting new HTTPS connection (1): 192.168.2.30</msg>
+<msg timestamp="20180427 05:20:55.872" level="INFO">Starting new HTTPS connection (1): 192.168.2.30</msg>
+<msg timestamp="20180427 05:20:55.906" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Created session 28</msg>
+<msg timestamp="20180427 05:20:55.906" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Starting the session...</msg>
+<msg timestamp="20180427 05:20:56.144" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Session has Started.</msg>
+<msg timestamp="20180427 05:20:56.145" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Configuring the test...</msg>
+<msg timestamp="20180427 05:20:56.759" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Starting the test...</msg>
+<msg timestamp="20180427 05:21:21.905" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: The test ended</msg>
+<msg timestamp="20180427 05:21:39.237" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Saving the test results into PDF files</msg>
+<msg timestamp="20180427 05:21:39.244" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Saving the test results into zipped CSV files...
+</msg>
+<msg timestamp="20180427 05:21:39.603" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Stopping the session...</msg>
+<msg timestamp="20180427 05:21:39.861" level="INFO">BELL_MAC3_DS.py -&gt; Run_BELL_MAC3_DS :: Deleting the session...</msg>
+<status status="PASS" endtime="20180427 05:21:39.939" starttime="20180427 05:20:54.137"></status>
+</kw>
+<status status="PASS" endtime="20180427 05:21:39.940" critical="yes" starttime="20180427 05:20:54.137"></status>
+</test>
+<status status="PASS" endtime="20180427 05:21:39.942" starttime="20180427 05:20:54.052"></status>
+</suite>
+<status status="PASS" endtime="20180427 05:21:39.946" starttime="20180427 05:20:54.028"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="1">Critical Tests</stat>
+<stat fail="0" pass="1">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="IxChariot" pass="1">IxChariot</stat>
+<stat fail="0" id="s1-s1" name="Execute Flow MAC" pass="1">IxChariot.Execute Flow MAC</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

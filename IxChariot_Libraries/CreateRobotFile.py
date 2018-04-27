@@ -14,6 +14,7 @@ def CreateRobotFile(global_TestCaseName,global_Direction,global_FlowGroup,fileNa
 	for i in robotFileList:
 		file = open(i,'w')
 		file.write ("*** Settings ***" + "\n")
+		file.write ("Library           "+ '../IxChariot_Libraries/ExecutionLogger.py'+"\n")
 		file.write ("\n"+"*** Test Cases ***" + "\n")
 		file.write('RunAllFlows'+'\n')
 		file.close()
@@ -50,7 +51,7 @@ def fileWriting(fileName,content,flowGroup):
 	# print fileName
 	# print content
 	libraryContent = '../IxChariot_FlowScripts/'+flowGroup+'/'+content+'.py'
-	lines.insert(RA+1,"\t"+content+ "\n")
+	lines.insert(RA+1,"\t"+ 'Run_'+content+ "\n")
 	lines.insert(sett ,"Library           "+libraryContent+"\n")
 	lines.insert(TC+1,content +"\n" )
 	lines.insert(TC+2 ,"\t"+ 'Run_'+content+ "\n"+'\n')

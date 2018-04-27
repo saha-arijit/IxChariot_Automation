@@ -58,8 +58,14 @@ def TestCase_validation(global_FlowGroup,global_TestCaseName,global_EndPoint1,gl
 
 		
 		
-	if global_Direction == 'DS' or global_Direction == 'US':
+	if global_Direction == 'DS' and global_EndPoint1 == "DESKTOP":
 		logger.MessageLog ("Parameters for Direction has been validated successfully.")
+	elif global_Direction == 'US' and global_EndPoint2 == "DESKTOP":
+		logger.MessageLog ("Parameters for Direction has been validated successfully.")
+	elif global_Direction == 'DS' and global_EndPoint1 != "DESKTOP" or global_Direction == 'US' and global_EndPoint2 != "DESKTOP":
+		floag = 0
+		logger.ErrorLog ("Direction value does not have accurate EndPoint value.")
+		return flag
 	elif (len(global_Direction) <= 0):
 		flag = 0
 		logger.ErrorLog ("Direction value cannot be left blank.")

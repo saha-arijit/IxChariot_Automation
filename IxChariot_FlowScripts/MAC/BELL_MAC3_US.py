@@ -1,17 +1,21 @@
 from ixia.webapi import *
 import ixchariotApi
 import time
-import os
+import os, sys
+sys.path.append('C:/IxChariot_Automation/IxChariot_Libraries')
+import ZipFile
+import configFile
 import logger
 
-def Run_BELL_MAC1_US():
+def Run_BELL_MAC3_US():
+	dict_config = configFile.userconfig()
 	webServerAddress = "https://192.168.2.30"
 	apiVersion = "v1"
-	username = "angelo.virgilio@ecin.ca"
-	password = "Ec1networks$"
+	username = "cage.noire@gmail.com"
+	password = "Atl12345"
 	apiKey = "7faf1207-b2ff-4a90-9a70-ea5ec87040f1"
-	filePath = "..\IxChariot_ExecutionReport\MAC\US\MAC1\\"
-	fileName = "DESKTOP_UDP Low Performance"+ '_' +time.strftime("%Y%m%d-%H%M%S",time.localtime())
+	filePath = "..\IxChariot_ExecutionReport\\" + dict_config["HHUB_Version"] + "\\MAC\US\MAC3\\"
+	fileName = "DESKTOP_TCP High Performance"+ '_' +time.strftime("%Y%m%d-%H%M%S",time.localtime())
 
 	CreatefilePath = filePath + fileName
 	if not os.path.exists(filePath):
@@ -33,7 +37,7 @@ def Run_BELL_MAC1_US():
 	testOptions.endpointManagementQoS = ixchariotApi.getQoSTemplateFromResourcesLibrary(session, "Best Effort")
 	session.httpPut("config/ixchariot/testOptions", data = testOptions)
 
-	src_EndpointsList = ["192.168.2.100/192.168.2.100"]
+	src_EndpointsList = ["192.168.2.102/192.168.2.102"]
 	dst_EndpointsList = ["192.168.2.29/192.168.2.29"]
 
 	name = "MAC"
@@ -51,7 +55,7 @@ def Run_BELL_MAC1_US():
 		session.httpPost("config/ixchariot/flowGroups/1/network/destinationEndpoints", data = ixchariotApi.createEndpoint(ips[0], ips[1]))
 
 	flowList = [
-					[ "UDP Low Performance" , 1 , "UDP" ,"None","None"]
+					[ "TCP High Performance" , 6 , "TCP" ,"None","None"]
 				]
 
 	for i in range (0, len(flowList)):
@@ -97,3 +101,6 @@ def Run_BELL_MAC1_US():
 
 	logger.MessageLog ("Deleting the session...")
 	session.httpDelete()
+
+	ZipFile.UnZipFile(CreatefilePath)
+

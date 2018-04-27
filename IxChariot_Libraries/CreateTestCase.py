@@ -4,7 +4,9 @@ import sys
 import CreateRobotFile
 import Validation
 import logger
+import ZipFile
 import subprocess
+import configFile
 
 from robot.api.deco import keyword
 
@@ -13,34 +15,12 @@ def comment(*message):
 	pass
 	loggerTest = logger.LoggerMethod(__name__)
 
-global fileNameList, flowGroupList, existList
+global fileNameList, flowGroupList, existList, dict_config
 
 fileNameList = []
 flowGroupList = []
 existList = ['userconfig.txt','DesignTools.robot']
-	
-def userconfig():
-	global dict_config
-	dict_config = {}
-	ConfigFilePath = 'userconfig.txt'
-	configfile = open(ConfigFilePath,'r')
-	x = configfile.read()
-	lines = x.split("\n")
-	
-	for line in lines:
-		
-		if '$' in line:
-			start = line.index('{')
-			end = line.index('}')
-			newstr = line[start+1:end]
-			key = newstr.strip()
-			
-			start1 = line.index('}')
-			end1 = line.index('#')
-			newstr1 = line[start1+1:end1]
-			value = newstr1.strip()
-			
-			dict_config[key] = value
+
 			
 def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol,Script,Duration,Create,NumberOfUsers):
 	global global_TestCaseName , global_Direction,global_FlowGroup,global_Protocol , reopenFlag
@@ -54,7 +34,7 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 	# userconfig()
 
 	try: 
-		userconfig()
+		dict_config = configFile.userconfig()
 		# reopenFlag = 1
 	except NameError:
 		# reopenFlag = 0
@@ -90,7 +70,7 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		FilePath = '..\\IxChariot_FlowScripts\\' + global_FlowGroup + '\\'
 		fileName = global_TestCaseName + '_' + global_Direction
 		
-		PDFfilePath = '..\\IxChariot_ExecutionReport\\' + global_FlowGroup + "\\"+ global_Direction + "\\" + global_EndPoint1 + "\\\\"
+		PDFfilePath = '..\\IxChariot_ExecutionReport\\\\" + dict_config["HHUB_Version"] + "\\\\' + global_FlowGroup + "\\"+ global_Direction + "\\" + global_EndPoint1 + "\\\\"
 		PDFFileName =  global_EndPoint2 + "_" + Script
 
 		if not os.path.exists(FilePath):
@@ -101,12 +81,17 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('from ixia.webapi import *' +'\n')
 		file.write('import ixchariotApi'+'\n')
 		file.write('import time'+'\n')
-		file.write('import os' + "\n")
-		file.write('import logger' + '\n'+'\n')
+		file.write('import os, sys' + "\n")
+		file.write('sys.path.append(\'C:/IxChariot_Automation/IxChariot_Libraries\')'+"\n")
+		file.write('import ZipFile' + "\n")
+		file.write('import configFile' + '\n')
+		file.write('import logger' + '\n'+"\n")
+		# file.write('logger.LoggerMethod(__name__)'+"\n"+"\n")
 
 		
 		file.write('def Run_'+global_TestCaseName+ '_' + global_Direction + '():' +'\n')
 		
+		file.write('\t'+ 'dict_config = configFile.userconfig()' + '\n')
 		file.write('\t'+'webServerAddress = "'+ dict_config['var_webServerAddress'] +'"' +'\n')
 		file.write('\t'+'apiVersion = "'+ dict_config['var_ixcapiVersion'] +'"' +'\n')
 		file.write('\t'+'username = "'+ dict_config['var_ixcusername'] +'"' +'\n')
@@ -207,7 +192,9 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('\t'+'session.stopSession()'+'\n'+'\n')
 		
 		file.write('\t'+'logger.MessageLog ("Deleting the session...")'+'\n')
-		file.write('\t'+'session.httpDelete()'+'\n')
+		file.write('\t'+'session.httpDelete()'+'\n' + "\n")
+
+		file.write('\t'+'ZipFile.UnZipFile(CreatefilePath)'+"\n" + "\n")
 		
 		logger.MessageLog("Successfully created test case python file.")
 				
