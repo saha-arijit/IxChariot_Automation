@@ -15,15 +15,16 @@ def comment(*message):
 	pass
 	loggerTest = logger.LoggerMethod(__name__)
 
-global fileNameList, flowGroupList, existList, dict_config
+global fileNameList, flowGroupList, existList , dict_config
 
 fileNameList = []
 flowGroupList = []
 existList = ['userconfig.txt','DesignTools.robot']
-
+	
 			
-def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol,Script,Duration,Create,NumberOfUsers):
-	global global_TestCaseName , global_Direction,global_FlowGroup,global_Protocol , reopenFlag
+def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol,Script,Duration,Radio1, Channel1, Radio2, Channel2,Radio3, Channel3,\
+						Radio4,Channel4,Radio5,Channel5,Create,NumberOfUsers):
+	global global_TestCaseName , global_Direction,global_FlowGroup,global_Protocol,reopenFlag
 	global_TestCaseName = TestCaseName.upper()
 	global_Direction = Direction.upper()
 	global_FlowGroup = FlowGroup.upper()
@@ -31,7 +32,6 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 	global_EndPoint1 = EndPoint1.upper()
 	global_EndPoint2 = EndPoint2.upper()
 	reopenFlag = 0
-	# userconfig()
 
 	try: 
 		dict_config = configFile.userconfig()
@@ -57,7 +57,7 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		logger.MessageLog("Starting validation of Test Parameters.")
 
 		reopenFlag = Validation.TestCase_validation(global_FlowGroup,global_TestCaseName,global_EndPoint1,global_EndPoint2,global_Direction,global_Protocol,Script, \
-												Duration,Create,NumberOfUsers,dict_config)
+												Duration,Radio1, Channel1, Radio2, Channel2,Radio3, Channel3,Radio4,Channel4,Radio5,Channel5,Create,NumberOfUsers,dict_config)
 
 		if reopenFlag == 1:
 			logger.MessageLog("Validation of Test Parameters completed successfully.")
@@ -73,6 +73,9 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		PDFfilePath = '..\\IxChariot_ExecutionReport\\\\" + dict_config["HHUB_Version"] + "\\\\' + global_FlowGroup + "\\"+ global_Direction + "\\" + global_EndPoint1 + "\\\\"
 		PDFFileName =  global_EndPoint2 + "_" + Script
 
+		directory = os.path.dirname(os.path.realpath(__file__))
+		directory = directory.replace('\\','/')
+		
 		if not os.path.exists(FilePath):
 			os.makedirs(FilePath)
 
@@ -82,20 +85,53 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('import ixchariotApi'+'\n')
 		file.write('import time'+'\n')
 		file.write('import os, sys' + "\n")
-		file.write('sys.path.append(\'C:/IxChariot_Automation/IxChariot_Libraries\')'+"\n")
+		file.write("sys.path.append('"+directory+"')"+'\n')
 		file.write('import ZipFile' + "\n")
 		file.write('import configFile' + '\n')
-		file.write('import logger' + '\n'+"\n")
+		file.write('import logger' + '\n')
+		file.write('import ChannelChange' + '\n'+"\n")
 		# file.write('logger.LoggerMethod(__name__)'+"\n"+"\n")
 
 		
-		file.write('def Run_'+global_TestCaseName+ '_' + global_Direction + '():' +'\n')
+		file.write('def Run_'+global_TestCaseName+ '_' + global_Direction + '(*channels):' +'\n')
+		file.write('\t'+'radioList = []'+'\n')
+		file.write('\t'+'channelList = []'+'\n'+'\n')
+		file.write('\t'+'for index in range(len(channels)):'+'\n')
+		file.write('\t'+'\t'+'if index %2 == 0:'+'\n')
+		file.write('\t'+'\t'+'\t'+'if channels[index] != "":'+"\n")
+		file.write('\t'+'\t'+'\t'+'\t'+'radioList.append(channels[index])'+'\n')
+		file.write('\t'+'\t'+'else:'+'\n')
+		file.write('\t'+'\t'+'\t'+'if channels[index] != "":'+"\n")
+		file.write('\t'+'\t'+'\t'+'\t'+'channelList.append(channels[index])'+'\n'+'\n')
+
+		file.write('\t'+'if len(radioList) > 0 and len(channelList) > 0:'+'\n'+'\n')
+		file.write('\t'+'\t'+'for radioValue in radioList:'+'\n')
+		file.write('\t'+'\t'+'\t'+'if len(radioValue) > 0:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'radioindex = radioList.index(radioValue)'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'presentChannelList = channelList[radioindex].split(",")'+'\n'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'for channelValue in presentChannelList:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'if len(channelValue) > 0:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'statusFlag = ChannelChange.hubChannel(radioValue, channelValue)'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'if not statusFlag:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'raise Exception'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'else:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+global_TestCaseName+ '_' + global_Direction+'()'+'\n')
+		file.write('\t'+'else:'+"\n")
+		file.write('\t'+'\t'+global_TestCaseName+ '_' + global_Direction+'()'+'\n'+'\n')
+
+		file.write('def '+global_TestCaseName+ '_' + global_Direction + '():' +'\n')
 		
-		file.write('\t'+ 'dict_config = configFile.userconfig()' + '\n')
+		file.write('\t' + 'dict_config = configFile.userconfig()' + '\n')
 		file.write('\t'+'webServerAddress = "'+ dict_config['var_webServerAddress'] +'"' +'\n')
 		file.write('\t'+'apiVersion = "'+ dict_config['var_ixcapiVersion'] +'"' +'\n')
-		file.write('\t'+'username = "'+ dict_config['var_ixcusername'] +'"' +'\n')
-		file.write('\t'+'password = "'+ dict_config['var_ixcpassword'] +'"' +'\n')
+		if dict_config['var_ixcusername'] == "\\":
+			file.write('\t'+'username = ""' +'\n')
+		else:
+			file.write('\t'+'username = "'+ dict_config['var_ixcusername'] +'"' +'\n')
+		if dict_config['var_ixcpassword'] == "\\":
+			file.write('\t'+'password = ""' +'\n')
+		else:	
+			file.write('\t'+'password = "'+ dict_config['var_ixcpassword'] +'"' +'\n')
 		file.write('\t'+'apiKey = "'+ dict_config['var_ixcapikey'] +'"'+'\n')
 		file.write('\t'+'filePath = "'+ PDFfilePath + '"'+'\n')
 		file.write('\t'+'fileName = "'+ PDFFileName + '\"'+ "+ '_' +"  + 'time.strftime("%Y%m%d-%H%M%S",time.localtime())' + '\n'+'\n')
@@ -105,7 +141,7 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('\t'+'\t'+'os.makedirs(filePath)'+'\n'+'\n')
 				
 		file.write('\t'+'logger.MessageLog("Connecting to %s" %webServerAddress)'+'\n')
-		file.write('\t'+'api = webApi.connect(webServerAddress, apiVersion, None, username, password)'+'\n')
+		file.write('\t'+'api = webApi.connect(webServerAddress, apiVersion, apiKey, None, None)'+'\n')
 		file.write('\t'+'session = api.createSession("ixchariot")'+'\n')
 		file.write('\t'+'logger.MessageLog ("Created session %s" % session.sessionId)'+'\n'+'\n')
 		
@@ -183,34 +219,36 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('\t'+'\t'+'logger.MessageLog ("Saving the test results into zipped CSV files...\\n")'+'\n')
 		file.write('\t'+'\t'+"with open(CreatefilePath + '.zip', 'wb+') as statsFile:"+'\n')
 		file.write('\t'+'\t'+'\t'+'api.getStatsCsvZipToFile(result.testId, statsFile)'+'\n'+'\n')
+		file.write('\t'+'\t'+'ZipFile.UnZipFile(CreatefilePath)'+"\n" + "\n")
 		
-		file.write('\t'+'except Exception, e:'+'\n')
+		file.write('\t'+'\t'+'logger.MessageLog ("Stopping the session...")'+'\n')
+		file.write('\t'+'\t'+'session.stopSession()'+'\n'+'\n')
 		
-		file.write('\t'+'\t'+'logger.ErrorLog ("Error in test case execution.")'+'\n'+'\n')
-		
-		file.write('\t'+'logger.MessageLog ("Stopping the session...")'+'\n')
-		file.write('\t'+'session.stopSession()'+'\n'+'\n')
-		
-		file.write('\t'+'logger.MessageLog ("Deleting the session...")'+'\n')
-		file.write('\t'+'session.httpDelete()'+'\n' + "\n")
+		file.write('\t'+'\t'+'logger.MessageLog ("Deleting the session...")'+'\n')
+		file.write('\t'+'\t'+'session.httpDelete()'+'\n' + "\n")
 
-		file.write('\t'+'ZipFile.UnZipFile(CreatefilePath)'+"\n" + "\n")
+		file.write('\t'+'except Exception, e:'+'\n'+'\n')
+		
+		file.write('\t'+'\t'+'session.stopSession()'+'\n')
+		file.write('\t'+'\t'+'session.httpDelete()'+'\n')
+		file.write('\t'+'\t'+'logger.ErrorLog ("Error in test case execution. Please check connection with EndPoint.")'+'\n')
+		file.write('\t'+'\t'+'raise Exception'+'\n')
 		
 		logger.MessageLog("Successfully created test case python file.")
 				
 		file.close()
 
-	if fileName+','+global_FlowGroup in fileNameList:
-		pass
-	else:
-		fileNameList.append(fileName+','+global_FlowGroup)
-	if global_FlowGroup in flowGroupList:
-		pass
-	else:
-		flowGroupList.append(global_FlowGroup)
+		if fileName+','+global_FlowGroup in fileNameList:
+			pass
+		else:
+			fileNameList.append(fileName+','+global_FlowGroup+','+'#'+','+Radio1+','+ Channel1+','+'#'+','+Radio2+','+Channel2+','+'#'+','+Radio3+','+ Channel3+','+'#'+','+Radio4+','+ Channel4+','+'#'+','+Radio5+','+ Channel5)
+		if global_FlowGroup in flowGroupList:
+			pass
+		else:
+			flowGroupList.append(global_FlowGroup)
 
-	existList.append('Execute_Flow_' + global_FlowGroup + '.robot')
-	
+		existList.append('Execute_Flow_' + global_FlowGroup + '.robot')
+		
 def Refresh():
 
 	global reopenFlag

@@ -1,11 +1,11 @@
 *** Variables ***
 ${var_webServerAddress}    https://192.168.2.30    # Server Address for IxChariot
 ${var_ixcusername}    cage.noire@gmail.com    # UserName - Username for IxChariot
-${var_ixcpassword}    Atl12345    # Password - Password for IxChariot
-${var_ixcapikey}    7faf1207-b2ff-4a90-9a70-ea5ec87040f1    # API key for IxChariot
+${var_ixcpassword}    \    # Password - Password for IxChariot
+${var_ixcapikey}    25596217-423e-4072-8d0a-ff6300d37d5f    # API key for IxChariot
 ${var_ixcapiVersion}    v1    # API Version for IxChariot
 ${MAC1}           192.168.2.100    # IP Address of MacBook 1
 ${MAC2}           192.168.2.101    # IP Address of MacBook 2
 ${MAC3}           192.168.2.102    # IP Address of MacBook 3
 ${DESKTOP}        192.168.2.29    # IP Address of DESKTOP
-${HHUB_Version}    v1.2    #version number
+${HHUB_Version}    v1.1    # Version of HomeHub
