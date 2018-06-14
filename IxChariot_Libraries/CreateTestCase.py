@@ -112,15 +112,22 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		file.write('\t'+'\t'+'\t'+'\t'+'for channelValue in presentChannelList:'+'\n')
 		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'if len(channelValue) > 0:'+'\n')
 		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'statusFlag = ChannelChange.hubChannel(radioValue, channelValue)'+'\n')
-		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'if not statusFlag:'+'\n')
-		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'raise Exception'+'\n')
-		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'else:'+'\n')
-		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+global_TestCaseName+ '_' + global_Direction+'()'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'try:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'if not statusFlag:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'raise Exception'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'else:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t' + 'dict_config = configFile.userconfig()' + "\n")
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t' + 'logger.MessageLog("Waiting \"+ dict_config[\'WaitTime\'] +\" seconds for EndPoint to realize change in channel.")'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+ 'time.sleep(float(dict_config[\'WaitTime\']))'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+ global_TestCaseName+ '_' + global_Direction+'()'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'except NameError:'+'\n')
+		file.write('\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'\t'+'logger.ErrorLog(\'Error in Channel Change.\')'+'\n')
 		file.write('\t'+'else:'+"\n")
 		file.write('\t'+'\t'+global_TestCaseName+ '_' + global_Direction+'()'+'\n'+'\n')
 
 		file.write('def '+global_TestCaseName+ '_' + global_Direction + '():' +'\n')
-		
+		file.write('\t' + 'logger.MessageLog("Waiting '+ dict_config['WaitTime']+' seconds for EndPoint to realize change in channel.")'+'\n')
+		file.write('\t' + 'time.sleep('+ dict_config['WaitTime'] +')'+'\n')
 		file.write('\t' + 'dict_config = configFile.userconfig()' + '\n')
 		file.write('\t'+'webServerAddress = "'+ dict_config['var_webServerAddress'] +'"' +'\n')
 		file.write('\t'+'apiVersion = "'+ dict_config['var_ixcapiVersion'] +'"' +'\n')
@@ -211,12 +218,12 @@ def CreateTestCase(FlowGroup,TestCaseName,EndPoint1,EndPoint2,Direction,Protocol
 		
 		file.write('\t'+'\t'+"stream = api.httpPost('results/%d/report' % resultId)"+'\n'+'\n')
 		
-		file.write('\t'+'\t'+'logger.MessageLog("Saving the test results into PDF files")'+'\n')
+		file.write('\t'+'\t'+'logger.MessageLog("Saving the test results into PDF files.")'+'\n')
 		file.write('\t'+'\t'+"with open(CreatefilePath +'.pdf', 'wb') as file:"+'\n')
 		file.write('\t'+'\t'+'\t'+'file.write(stream.encode(\'utf-8\'))'+'\n'+'\n')
 		
 		
-		file.write('\t'+'\t'+'logger.MessageLog ("Saving the test results into zipped CSV files...\\n")'+'\n')
+		file.write('\t'+'\t'+'logger.MessageLog ("Saving test results into zipped CSV files.")'+'\n')
 		file.write('\t'+'\t'+"with open(CreatefilePath + '.zip', 'wb+') as statsFile:"+'\n')
 		file.write('\t'+'\t'+'\t'+'api.getStatsCsvZipToFile(result.testId, statsFile)'+'\n'+'\n')
 		file.write('\t'+'\t'+'ZipFile.UnZipFile(CreatefilePath)'+"\n" + "\n")
